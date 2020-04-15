@@ -30,7 +30,7 @@ class SolutionsController < ApplicationController
 
   get '/solutions/:id' do
     authenticate_user
-    @solution = Solution.find_by_id(params[:id])
+    find_solution
     if @solution
       @problem = Problem.find_by_id(@solution.problem_id)
       erb :'/solutions/show'
@@ -42,7 +42,7 @@ class SolutionsController < ApplicationController
 
   get '/solutions/:id/edit' do
     authenticate_user
-    @solution = Solution.find_by_id(params[:id])
+    find_solution
     if @solution && @solution.user == current_user
       erb :'/solutions/edit'
     elsif @solution && !@solution.user == current_user
@@ -56,7 +56,7 @@ class SolutionsController < ApplicationController
 
   patch '/solutions/:id/edit' do
     authenticate_user
-    @solution = Solution.find_by_id(params[:id])
+    find_solution
     if !params[:solution][:name].empty?
       @solution.update(name: params[:solution][:name],
                        description: params[:solution][:description])
@@ -69,7 +69,7 @@ class SolutionsController < ApplicationController
 
   get '/solutions/:id/delete' do
     authenticate_user
-    @solution = Solution.find_by_id(params[:id])
+    find_solution
     @problem = @solution.problem
     if @solution.user == current_user
       @solution.destroy
@@ -90,5 +90,9 @@ class SolutionsController < ApplicationController
         end
       end
     @problem
+  end
+
+  def find_solution
+    @solution = Solution.find_by_id(params[:id])
   end
 end

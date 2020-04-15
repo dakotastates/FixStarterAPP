@@ -36,7 +36,7 @@ class ProblemsController < ApplicationController
 
   get '/problems/:id' do
     authenticate_user
-      @problem = Problem.find_by_id(params[:id])
+      find_problem
       @user = User.find_by_id(@problem.user_id)
       erb :'/problems/show'
   end
@@ -48,7 +48,7 @@ class ProblemsController < ApplicationController
     end
 
     post '/problems/:id/add_solution' do
-        @problem = Problem.find_by_id(params[:id])
+        find_problem
         if !params[:solution_name].empty? && !params[:solution_name].empty?
           Solution.create(name: params[:solution_name], problem: @problem, user: current_user)
 
@@ -62,7 +62,7 @@ class ProblemsController < ApplicationController
 
   get '/problems/:id/edit' do
     authenticate_user
-    @problem = Problem.find_by_id(params[:id])
+    find_problem
     if @problem && @problem.user_id == current_user.id
       erb :'/problems/edit'
     elsif @problem && !@problem.user == current_user
@@ -76,7 +76,7 @@ class ProblemsController < ApplicationController
 
   patch '/problems/:id/edit' do
     authenticate_user
-    @problem = Problem.find_by_id(params[:id])
+    find_problem
     if @problem.update(params[:problem])
       redirect "/problems/#{@problem.id}"
     else
@@ -86,7 +86,7 @@ class ProblemsController < ApplicationController
 
   get '/problems/:id/delete' do
       authenticate_user
-      @problem = Problem.find_by_id(params[:id])
+      find_problem
       #@solution = @problem.solution
       if @problem.user_id == current_user.id
         # Delete all associated solutions to a problem

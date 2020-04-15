@@ -6,6 +6,7 @@ end
 
 use Rack::MethodOverride
 
+use SessionController
 use ProblemsController
 use SolutionsController
 
